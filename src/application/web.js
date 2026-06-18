@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import { router } from '../routes/api.route.js'
+import { errorMiddleware } from '../middleware/error.middleware.js'
 
 export const web = express()
 
@@ -12,3 +13,5 @@ web.get('/', (_, res) => {
 })
 
 web.use('/api', router)
+
+web.use(errorMiddleware)
