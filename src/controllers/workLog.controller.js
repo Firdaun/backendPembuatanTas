@@ -24,7 +24,23 @@ const crtlWorkLogList = async (_req, res, next) => {
     }
 }
 
+const crtlCompleteWorkLog = async (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id)
+
+        const result = await workLogService.svcCompleteWorkLog(id)
+
+        res.status(200).json({
+            message: "Work log completed successfully",
+            data: result
+        })
+    } catch (e) {
+        next(e)
+    }
+}
+
 export const workLogController = {
     crtlCreateWorkLog,
-    crtlWorkLogList
+    crtlWorkLogList,
+    crtlCompleteWorkLog
 }

@@ -9,5 +9,6 @@ router.get('/bag-types', bagTypeController.crtlBagTypeList)
 
 router.post('/work-logs', workLogController.crtlCreateWorkLog)
 router.get('/work-logs', workLogController.crtlWorkLogList)
+router.patch('/work-logs/:id/setor', workLogController.crtlCompleteWorkLog)
 
 export { router }

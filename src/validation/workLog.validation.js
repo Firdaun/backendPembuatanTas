@@ -6,4 +6,6 @@ const createWorkLogValidation = Joi.object({
     startTime: Joi.date().optional()
 })
 
-export { createWorkLogValidation }
+const getWorkLogValidation = Joi.number().required().positive()
+
+export { createWorkLogValidation, getWorkLogValidation }
