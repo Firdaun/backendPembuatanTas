@@ -26,7 +26,7 @@ const svcCreateWorkLog = async (req) => {
         },
         select: {
             id: true,
-            createdAt: true
+            startTime: true
         }
     })
 }
@@ -41,7 +41,7 @@ const svcGetWorkLogList = async () => {
             }
         },
         orderBy: {
-            createdAt: 'desc'
+            startTime: 'desc'
         }
     })
 }
