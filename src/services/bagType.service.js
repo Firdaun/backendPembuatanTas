@@ -7,7 +7,7 @@ const svcCreateBagType = async (req) => {
     return await prismaClient.bagType.create({
         data: data,
         select: {
-            startTime: true
+            createdAt: true
         }
     })
 }

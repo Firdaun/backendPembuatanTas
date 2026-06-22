@@ -39,8 +39,26 @@ const crtlCompleteWorkLog = async (req, res, next) => {
     }
 }
 
+const crtlGetTotalIncome = async (req, res, next) => {
+    try {
+        // Pass the query object (which contains startDate and endDate)
+        const result = await workLogService.svcGetTotalIncome(req.query)
+
+        res.status(200).json({
+            data: {
+                startDate: req.query.startDate,
+                endDate: req.query.endDate,
+                totalIncome: result
+            }
+        })
+    } catch (e) {
+        next(e)
+    }
+}
+
 export const workLogController = {
     crtlCreateWorkLog,
     crtlWorkLogList,
-    crtlCompleteWorkLog
+    crtlCompleteWorkLog,
+    crtlGetTotalIncome
 }

@@ -1,7 +1,7 @@
 import { prismaClient } from "../application/database.js"
 import { ResponseError } from "../error/response.error.js"
 import { validate } from "../validation/validation.js"
-import { createWorkLogValidation, getWorkLogValidation } from "../validation/workLog.validation.js"
+import { createWorkLogValidation, getIncomeValidation, getWorkLogValidation } from "../validation/workLog.validation.js"
 
 const svcCreateWorkLog = async (req) => {
     const data = validate(createWorkLogValidation, req)
@@ -81,8 +81,37 @@ const svcCompleteWorkLog = async (workLogId) => {
     })
 }
 
+const svcGetTotalIncome = async (query) => {
+    // 1. Validate the incoming query parameters
+    const { startDate, endDate } = validate(getIncomeValidation, query)
+
+    // 2. Convert strings to Date objects
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    
+    // Safety measure: Ensure the end date covers the entire day up to 23:59:59
+    end.setHours(23, 59, 59, 999)
+
+    // 3. Query Prisma
+    const result = await prismaClient.workLog.aggregate({
+        _sum: {
+            estimatedPay: true
+        },
+        where: {
+            status: 'SETOR',
+            endTime: {
+                gte: start, // Greater than or equal to start date
+                lte: end    // Less than or equal to end date
+            }
+        }
+    })
+
+    return result._sum.estimatedPay || 0
+}
+
 export const workLogService = {
     svcCreateWorkLog,
     svcGetWorkLogList,
-    svcCompleteWorkLog
+    svcCompleteWorkLog,
+    svcGetTotalIncome
 }

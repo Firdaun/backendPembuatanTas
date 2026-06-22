@@ -7,6 +7,8 @@ const router = express.Router()
 router.post('/bag-types', bagTypeController.crtlCreateBagType)
 router.get('/bag-types', bagTypeController.crtlBagTypeList)
 
+router.get('/work-logs/income', workLogController.crtlGetTotalIncome)
+
 router.post('/work-logs', workLogController.crtlCreateWorkLog)
 router.get('/work-logs', workLogController.crtlWorkLogList)
 router.patch('/work-logs/:id/setor', workLogController.crtlCompleteWorkLog)
