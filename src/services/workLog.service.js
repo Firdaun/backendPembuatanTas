@@ -82,17 +82,13 @@ const svcCompleteWorkLog = async (workLogId) => {
 }
 
 const svcGetTotalIncome = async (query) => {
-    // 1. Validate the incoming query parameters
     const { startDate, endDate } = validate(getIncomeValidation, query)
 
-    // 2. Convert strings to Date objects
     const start = new Date(startDate)
     const end = new Date(endDate)
-    
-    // Safety measure: Ensure the end date covers the entire day up to 23:59:59
+
     end.setHours(23, 59, 59, 999)
 
-    // 3. Query Prisma
     const result = await prismaClient.workLog.aggregate({
         _sum: {
             estimatedPay: true
@@ -100,8 +96,8 @@ const svcGetTotalIncome = async (query) => {
         where: {
             status: 'SETOR',
             endTime: {
-                gte: start, // Greater than or equal to start date
-                lte: end    // Less than or equal to end date
+                gte: start,
+                lte: end
             }
         }
     })

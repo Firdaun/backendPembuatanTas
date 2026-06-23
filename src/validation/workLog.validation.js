@@ -2,7 +2,7 @@ import { Joi } from "./customJoi.validation.js"
 
 const createWorkLogValidation = Joi.object({
     bagTypeId: Joi.number().required().positive(),
-    quantityDozens: Joi.number().required().positive(),
+    quantityDozens: Joi.number().required().positive().max(10),
     startTime: Joi.date().optional()
 })
 
