@@ -1,10 +1,21 @@
 import { prismaClient } from "../application/database.js"
 import { ResponseError } from "../error/response.error.js"
 import { validate } from "../validation/validation.js"
-import { createWorkLogValidation, getIncomeValidation, getWorkLogValidation } from "../validation/workLog.validation.js"
+import { createWorkLogValidation, getIncomeValidation, getWorkLogValidation, updateWorkLogValidation } from "../validation/workLog.validation.js"
 
 const svcCreateWorkLog = async (req) => {
     const data = validate(createWorkLogValidation, req)
+
+    const existingPending = await prismaClient.workLog.findFirst({
+        where: {
+            status: "PENDING"
+        }
+    })
+
+    if (existingPending) {
+        throw new ResponseError(400, "Masih ada log yang PENDING. Selesaikan terlebih dahulu sebelum membuat log baru.")
+    }
+
     const bagType = await prismaClient.bagType.findUnique({
         where: {
             id: data.bagTypeId
@@ -105,9 +116,56 @@ const svcGetTotalIncome = async (query) => {
     return result._sum.estimatedPay || 0
 }
 
+const svcUpdateWorkLog = async (workLogId, req) => {
+    const id = validate(getWorkLogValidation, workLogId)
+    const data = validate(updateWorkLogValidation, req)
+
+    const existingLog = await prismaClient.workLog.findUnique({
+        where: {
+            id: id
+        }
+    })
+
+    if (!existingLog) {
+        throw new ResponseError(404, "Work log not found")
+    }
+
+    if (existingLog.status !== 'PENDING') {
+        throw new ResponseError(400, "Hanya log dengan status PENDING yang bisa diedit")
+    }
+
+    const bagTypeId = data.bagTypeId || existingLog.bagTypeId
+    const quantityDozens = data.quantityDozens || existingLog.quantityDozens
+
+    const bagType = await prismaClient.bagType.findUnique({
+        where: {
+            id: bagTypeId
+        }
+    })
+
+    if (!bagType) {
+        throw new ResponseError(404, "Bag type not found")
+    }
+
+    const estimatedPay = quantityDozens * bagType.pricePerDozen
+
+    return await prismaClient.workLog.update({
+        where: {
+            id: id
+        },
+        data: {
+            bagTypeId: bagTypeId,
+            quantityDozens: quantityDozens,
+            pricePerDozen: bagType.pricePerDozen,
+            estimatedPay: estimatedPay
+        }
+    })
+}
+
 export const workLogService = {
     svcCreateWorkLog,
     svcGetWorkLogList,
     svcCompleteWorkLog,
-    svcGetTotalIncome
+    svcGetTotalIncome,
+    svcUpdateWorkLog
 }

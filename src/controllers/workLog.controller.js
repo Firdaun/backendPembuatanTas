@@ -56,9 +56,26 @@ const crtlGetTotalIncome = async (req, res, next) => {
     }
 }
 
+const crtlUpdateWorkLog = async (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id)
+        const body = req.body
+
+        const result = await workLogService.svcUpdateWorkLog(id, body)
+
+        res.status(200).json({
+            message: "Work log updated successfully",
+            data: result
+        })
+    } catch (e) {
+        next(e)
+    }
+}
+
 export const workLogController = {
     crtlCreateWorkLog,
     crtlWorkLogList,
     crtlCompleteWorkLog,
-    crtlGetTotalIncome
+    crtlGetTotalIncome,
+    crtlUpdateWorkLog
 }

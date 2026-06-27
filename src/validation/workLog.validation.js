@@ -8,9 +8,14 @@ const createWorkLogValidation = Joi.object({
 
 const getWorkLogValidation = Joi.number().required().positive()
 
+const updateWorkLogValidation = Joi.object({
+    bagTypeId: Joi.number().positive().optional(),
+    quantityDozens: Joi.number().positive().max(10).optional()
+}).min(1)
+
 const getIncomeValidation = Joi.object({
     startDate: Joi.date().iso().required(),
     endDate: Joi.date().iso().required()
 })
 
-export { createWorkLogValidation, getWorkLogValidation, getIncomeValidation }
+export { createWorkLogValidation, getWorkLogValidation, updateWorkLogValidation, getIncomeValidation }
