@@ -12,6 +12,6 @@ router.get('/work-logs/income', workLogController.crtlGetTotalIncome)
 router.post('/work-logs', workLogController.crtlCreateWorkLog)
 router.get('/work-logs', workLogController.crtlWorkLogList)
 router.patch('/work-logs/:id/setor', workLogController.crtlCompleteWorkLog)
-router.put('/work-logs/:id', workLogController.crtlUpdateWorkLog)
+router.put('/work-logs/:id/update', workLogController.crtlUpdateWorkLog)
 
 export { router }
