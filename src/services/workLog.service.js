@@ -98,8 +98,6 @@ const svcGetTotalIncome = async (query) => {
     const start = new Date(startDate)
     const end = new Date(endDate)
 
-    end.setHours(23, 59, 59, 999)
-
     const result = await prismaClient.workLog.aggregate({
         _sum: {
             estimatedPay: true
